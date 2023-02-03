@@ -1,0 +1,33 @@
+body {
+    background-color: green;
+}
+
+#game-board {
+    position: relative;
+    width: 544px;
+    height: 416px;
+    margin: 0 auto;
+}
+
+.obstacle {
+    position: absolute;
+    width: 32px;
+    z-index: 0;
+}
+
+#cenario {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 544px;
+}
+
+#bomberman {
+    position: absolute;
+    top: 330px;
+    left: 256px;
+    width: 30px;
+    z-index: 1;
+}
