@@ -12,13 +12,11 @@ body {
 .obstacle {
     position: absolute;
     width: 32px;
-    z-index: 0;
 }
 
 .chest {
     position: absolute;
     width: 32px;
-    z-index: 0;
 }
 
 #cenario {
@@ -36,4 +34,29 @@ body {
     left: 256px;
     width: 30px;
     z-index: 1;
+}
+
+.door {
+    position: absolute;
+    width: 32px;
+}
+
+#door_01_01 {
+    top: 58px;
+    left: 369px;
+}
+
+#door_01_02 {
+    top: 58px;
+    left: 399px;
+}
+
+#door_02_01 {
+    top: 95px;
+    left: 369px;
+}
+
+#door_02_02 {
+    top: 95px;
+    left: 399px;
 }
