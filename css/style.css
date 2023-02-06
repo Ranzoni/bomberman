@@ -12,7 +12,11 @@ body {
 .obstacle {
     position: absolute;
     width: 32px;
-    z-index: 0;
+}
+
+.chest {
+    position: absolute;
+    width: 32px;
 }
 
 #cenario {
@@ -26,8 +30,54 @@ body {
 
 #bomberman {
     position: absolute;
-    top: 330px;
+    top: 266px;
     left: 256px;
     width: 30px;
     z-index: 1;
+}
+
+.door {
+    position: absolute;
+    width: 32px;
+}
+
+#door-01-01 {
+    top: 58px;
+    left: 369px;
+}
+
+#door-01-02 {
+    top: 58px;
+    left: 399px;
+}
+
+#door-02-01 {
+    top: 95px;
+    left: 369px;
+}
+
+#door-02-02 {
+    top: 95px;
+    left: 399px;
+}
+
+#button {
+    position: absolute;
+    width: 32px;
+    top: 64px;
+    left: 448px;
+}
+
+.magnet {
+    position: absolute;
+    width: 32px;
+    top: 320px;
+}
+
+#magnet-01 {
+    left: 128px;
+}
+
+#magnet-02 {
+    left: 384px;
 }
