@@ -41,22 +41,43 @@ body {
     width: 32px;
 }
 
-#door_01_01 {
+#door-01-01 {
     top: 58px;
     left: 369px;
 }
 
-#door_01_02 {
+#door-01-02 {
     top: 58px;
     left: 399px;
 }
 
-#door_02_01 {
+#door-02-01 {
     top: 95px;
     left: 369px;
 }
 
-#door_02_02 {
+#door-02-02 {
     top: 95px;
     left: 399px;
+}
+
+#button {
+    position: absolute;
+    width: 32px;
+    top: 64px;
+    left: 448px;
+}
+
+.magnet {
+    position: absolute;
+    width: 32px;
+    top: 320px;
+}
+
+#magnet-01 {
+    left: 128px;
+}
+
+#magnet-02 {
+    left: 384px;
 }
