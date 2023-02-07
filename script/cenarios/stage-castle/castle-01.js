@@ -5,7 +5,7 @@ const obstacleHeight = 32;
 function buildItem(lineNumber, colNumber, itemName, topItem, leftItem) {
     const idItem = `${itemName}-${lineNumber}-${colNumber}`;
     
-    gameBoard.innerHTML += `<img src="./img/stages/castle/${itemName}.png" id="${idItem}" class="${itemName}">`;
+    gameBoard.innerHTML += `<img src="./img/stages/castle/${itemName}.png" id="${idItem}" class="obstacle ${itemName}">`;
     
     const item = document.querySelector(`#${idItem}`);
     
@@ -13,22 +13,22 @@ function buildItem(lineNumber, colNumber, itemName, topItem, leftItem) {
     item.style.left = `${leftItem}px`;
 }
 
-function loopToBuildObstacles() {
+function loopToBuildFixedObstacles() {
     let topObstacle = 64;
     let leftObstacle = 96;
 
     for (let i = 1; i <= 4; i++) {
-        buildItem(1, i, 'obstacle', topObstacle, leftObstacle);
+        buildItem(1, i, 'fixed-obstacle', topObstacle, leftObstacle);
         leftObstacle += (obstacleWidth * 2);
     }
     
     topObstacle = 128;
     
     for (let i = 2; i <= 4; i++) {
-        leftObstacle = 95;
+        leftObstacle = 96;
     
         for (let j = 1; j <= 6; j++) {
-            buildItem(i, j, 'obstacle', topObstacle, leftObstacle);
+            buildItem(i, j, 'fixed-obstacle', topObstacle, leftObstacle);
             leftObstacle += (obstacleWidth * 2);
         }
     
@@ -80,5 +80,5 @@ function buildChests() {
     buildItem(9, 6, 'chest', 352, 448);
 }
 
-loopToBuildObstacles();
+loopToBuildFixedObstacles();
 buildChests();
