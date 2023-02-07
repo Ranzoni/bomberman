@@ -63,14 +63,14 @@ function canMove(keyDown) {
 
             let nextTopPosition = keyDown === KEY_ARROW_UP ? bombermanTop - QT_PIXELS_MOVE : bombermanTop + QT_PIXELS_MOVE;
 
-            if ((nextTopPosition + bomberman.height) > (obstacleTop + 4) && ((nextTopPosition + bomberman.height) - obstacleTop) <= 46.63) {
+            if ((nextTopPosition + bomberman.height) > (obstacleTop + 4) && ((nextTopPosition + bomberman.height) - obstacleTop) <= 50.63) {
                 functionReturn = false;
                 return false;
             }
         }
             
         if (keyDown === KEY_ARROW_RIGHT || keyDown === KEY_ARROW_LEFT) {
-            if ((bombermanTop + bomberman.height) <= (obstacleTop + 4) || ((bombermanTop + bomberman.height) - obstacleTop) > 46.63) {
+            if ((bombermanTop + bomberman.height) <= (obstacleTop + 4) || ((bombermanTop + bomberman.height) - obstacleTop) > 50.63) {
                 return;
             }
             

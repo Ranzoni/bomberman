@@ -2,7 +2,7 @@ const gameBoard = document.getElementById('game-board');
 const obstacleWidth = 32;
 const obstacleHeight = 32;
 
-function buildItem(lineNumber, colNumber, itemName, topItem, leftItem) {
+function buildItem(lineNumber, colNumber, itemName, topItem, leftItem, esconder = false) {
     const idItem = `${itemName}-${lineNumber}-${colNumber}`;
     
     gameBoard.innerHTML += `<img src="./img/stages/castle/${itemName}.png" id="${idItem}" class="obstacle ${itemName}">`;
@@ -11,6 +11,9 @@ function buildItem(lineNumber, colNumber, itemName, topItem, leftItem) {
     
     item.style.top = `${topItem}px`;
     item.style.left = `${leftItem}px`;
+    if (esconder) {
+        item.style.zIndex = '-1';
+    }
 }
 
 function loopToBuildFixedObstacles() {
@@ -80,5 +83,70 @@ function buildChests() {
     buildItem(9, 6, 'chest', 352, 448);
 }
 
+function buildWalls() {
+    let leftPosInitial = 64;
+    for (var i = 1; i <= 9; i++) {
+        buildItem(1, i, 'profile_water_wall', 32, leftPosInitial);
+        leftPosInitial += 32;
+    }
+
+    buildItem(1, 10, 'profile_water_wall', 32, 448);
+
+    let topPositionInitial = 64;
+    for (var i = 1; i <= 4; i++) {
+        buildItem(1, i, 'left_double_wall', topPositionInitial, 32);
+        topPositionInitial += 32;
+    }
+
+    topPositionInitial = 64;
+    for (var i = 1; i <= 4; i++) {
+        buildItem(1, i, 'right_double_wall', topPositionInitial, 480);
+        topPositionInitial += 32;
+    }
+
+    buildItem(1, 1, 'profile_wall', 192, 65);
+    buildItem(1, 1, 'left_stair_corner', 192, 97);
+    buildItem(1, 1, 'right_stair_corner', 192, 160);
+
+    leftPosInitial = 192;
+    for (var i = 2; i <= 6; i++) {
+        buildItem(1, i, 'profile_wall', 192, leftPosInitial);
+        leftPosInitial += 32;
+    }
+
+    buildItem(1, 2, 'left_stair_corner', 192, 352);
+    buildItem(1, 2, 'right_stair_corner', 192, 416);
+
+    buildItem(1, 7, 'profile_wall', 192, 448);
+
+    buildItem(1, 1, 'left_wall_corner_01', 224, 64);
+
+    buildItem(1, 1, 'left_wall', 288, 64);
+
+    buildItem(1, 1, 'right_wall_corner_01', 224, 448);
+
+    buildItem(1, 1, 'right_wall', 288, 448);
+
+    buildItem(1, 1, 'left_wall_corner_02', 320, 64);
+
+    buildItem(1, 2, 'left_wall', 352, 32, true);
+
+    buildItem(1, 2, 'right_wall', 352, 480, true);
+
+    buildItem(1, 1, 'right_wall_corner_02', 320, 448);
+
+    leftPosInitial = 64;
+    for (var i = 1; i <= 13; i++) {
+        if (i % 2 === 0) {
+            buildItem(1, i, 'profile_wall_window', 384, leftPosInitial);
+        } else {
+            buildItem(1, i, 'profile_wall_down', 384, leftPosInitial);
+        }
+
+        leftPosInitial += 32;
+    }
+}
+
 loopToBuildFixedObstacles();
 buildChests();
+buildWalls();
