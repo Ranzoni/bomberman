@@ -61,6 +61,52 @@ body {
     left: 399px;
 }
 
+.wall-door {
+    position: absolute;
+    width: 32px;
+    z-index: -1;
+}
+
+#left-wall-door-01 {
+    top: 0;
+    left: 352px;
+}
+
+#left-wall-door-02 {
+    top: 32px;
+    left: 352px;
+}
+
+#left-wall-door-03 {
+    top: 64px;
+    left: 352px;
+}
+
+#left-wall-door-04 {
+    top: 96px;
+    left: 352px;
+}
+
+#right-wall-door-01 {
+    top: 0;
+    left: 416px;
+}
+
+#right-wall-door-02 {
+    top: 32px;
+    left: 416px;
+}
+
+#right-wall-door-03 {
+    top: 64px;
+    left: 416px;
+}
+
+#right-wall-door-04 {
+    top: 96px;
+    left: 416px;
+}
+
 #button {
     position: absolute;
     width: 32px;
