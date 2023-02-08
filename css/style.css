@@ -127,3 +127,24 @@ body {
 #magnet-02 {
     left: 384px;
 }
+
+.enemy_01 {
+    position: absolute;
+    width: 30px;
+    z-index: 1;
+}
+
+#enemy_01_01 {
+    top: 140px;
+    left: 65px;
+}
+
+#enemy_01_02 {
+    top: 268px;
+    left: 162px;
+}
+
+#enemy_01_03 {
+    top: 268px;
+    left: 352px;
+}

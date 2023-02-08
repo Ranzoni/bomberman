@@ -13,11 +13,11 @@ const KEY_ARROW_LEFT = 'ArrowLeft';
 let onMove = false;
 let lastKeyDirection = null;
 
-let legDirection = LEG_LEFT;
+let bombermanLegDirection = LEG_LEFT;
 
-let loopImage = null;
-let loopPosition = null;
-let velocityMove = 15;
+let loopBombermanImage = null;
+let loopBombermanPosition = null;
+let velocityBombermanMove = 15;
 
 function animateBomberman(keyDown) {
     let startImgName = '';
@@ -33,20 +33,20 @@ function animateBomberman(keyDown) {
         return;
     }
 
-    legDirection = LEG_LEFT;
+    bombermanLegDirection = LEG_LEFT;
     bomberman.src = `./img/bomberman/move/${startImgName}_left_leg.png`;
-    loopImage = setInterval(() => {
-        if (legDirection === LEG_LEFT)  {
+    loopBombermanImage = setInterval(() => {
+        if (bombermanLegDirection === LEG_LEFT)  {
             bomberman.src = `./img/bomberman/move/${startImgName}_right_leg.png`;
-            legDirection = LEG_RIGHT;
+            bombermanLegDirection = LEG_RIGHT;
         } else {
             bomberman.src = `./img/bomberman/move/${startImgName}_left_leg.png`;
-            legDirection = LEG_LEFT;
+            bombermanLegDirection = LEG_LEFT;
         }
     }, 200);
 }
 
-function canMove(keyDown) {
+function canMoveBomberman(keyDown) {
     const bomberman = document.getElementById('bomberman');
     const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
     const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
@@ -89,7 +89,7 @@ function canMove(keyDown) {
 }
 
 function alterBombermanPosition(keyDown) {
-    if (!canMove(keyDown)) {
+    if (!canMoveBomberman(keyDown)) {
         return;
     }
 
@@ -114,22 +114,22 @@ function alterBombermanPosition(keyDown) {
 
     let positionBomberman = +window.getComputedStyle(bomberman)[property].replace('px', '');
     bomberman.style[property] = `${positionBomberman + pixelsToMove}px`;
-    loopPosition = setInterval(() => {
-        if (!canMove(keyDown)) {
-            clearInterval(loopPosition);
+    loopBombermanPosition = setInterval(() => {
+        if (!canMoveBomberman(keyDown)) {
+            clearInterval(loopBombermanPosition);
             return;
         }
 
         positionBomberman = +window.getComputedStyle(bomberman)[property].replace('px', '');
         bomberman.style[property] = `${positionBomberman + pixelsToMove}px`;
-    }, velocityMove);
+    }, velocityBombermanMove);
 }
 
 function moveBomberman(keyDown) {
     if (!!onMove && lastKeyDirection === keyDown) {
         return;
     } else if (!!onMove && lastKeyDirection !== keyDown) {
-        clearIntervals();
+        clearBombermanIntervals();
     }
 
     animateBomberman(keyDown);
@@ -144,7 +144,7 @@ function stopBomberman(keyDown) {
         return;
     }
     
-    clearIntervals();
+    clearBombermanIntervals();
     onMove = false;
     lastKeyDirection = null;
 
@@ -159,9 +159,9 @@ function stopBomberman(keyDown) {
     }
 }
 
-function clearIntervals() {
-    clearInterval(loopImage);
-    clearInterval(loopPosition);
+function clearBombermanIntervals() {
+    clearInterval(loopBombermanImage);
+    clearInterval(loopBombermanPosition);
 }
 
 document.addEventListener('keydown', (e) => {
