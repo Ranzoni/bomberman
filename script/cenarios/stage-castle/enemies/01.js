@@ -7,8 +7,14 @@ const VELOCITY_ENEMY_01 = 27;
 
 const LIST_DIRECTIONS = [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION];
 
-let loopCastleEnemy01Image = null;
-let loopCastleEnemy01Position = null;
+let loopCastleEnemy0101Image = null;
+let loopCastleEnemy0101Position = null;
+
+let loopCastleEnemy0102Image = null;
+let loopCastleEnemy0102Position = null;
+
+let loopCastleEnemy0103Image = null;
+let loopCastleEnemy0103Position = null;
 
 function animateCastleEnemy01(direction, enemy, legDirection) {
     let startImgName = '';
@@ -26,7 +32,7 @@ function animateCastleEnemy01(direction, enemy, legDirection) {
 
     legDirection = LEG_LEFT;
     enemy.src = `./img/stages/castle/enemies/01/${startImgName}_left.png`;
-    loopCastleEnemy01Image = setInterval(() => {
+    return setInterval(() => {
         if (legDirection === LEG_LEFT)  {
             enemy.src = `./img/stages/castle/enemies/01/${startImgName}_right.png`;
             legDirection = LEG_RIGHT;
@@ -40,11 +46,12 @@ function animateCastleEnemy01(direction, enemy, legDirection) {
 function canMoveCastleEnemy01(direction, enemy) {
     const enemyTop = +window.getComputedStyle(enemy).top.replace('px', '');
     const enemyLeft = +window.getComputedStyle(enemy).left.replace('px', '');
-    const obstacles = document.getElementsByClassName('obstacle');
+    const obstaclesToEnemies = document.getElementsByClassName('obstacle');
+    const characters = document.getElementsByClassName('character');
 
     let functionReturn = true;
 
-    Array.prototype.forEach.call(obstacles, obstacle => {
+    Array.prototype.forEach.call(obstaclesToEnemies, obstacle => {
         const obstacleTop = +window.getComputedStyle(obstacle).top.replace('px', '');
         const obstacleLeft = +window.getComputedStyle(obstacle).left.replace('px', '');
 
@@ -52,17 +59,17 @@ function canMoveCastleEnemy01(direction, enemy) {
             if ((enemyLeft + enemy.width) <= (obstacleLeft) || enemyLeft >= (obstacleLeft + obstacle.width)) {
                 return;
             }
-
+                 
             let nextTopPosition = direction === UP_DIRECTION ? enemyTop - QT_PIXELS_MOVE : enemyTop + QT_PIXELS_MOVE;
-
-            if ((nextTopPosition + enemy.height) > (obstacleTop) && nextTopPosition <= obstacleTop) {
+            
+            if ((nextTopPosition + enemy.height + 4) > (obstacleTop) && nextTopPosition - 12 <= obstacleTop) {
                 functionReturn = false;
                 return false;
             }
         }
             
         if (direction === RIGHT_DIRECTION || direction === LEFT_DIRECTION) {
-            if ((enemyTop + enemy.height) <= (obstacleTop) || enemyTop > obstacleTop) {
+            if ((enemyTop + enemy.height - 4) <= (obstacleTop) || enemyTop + 12 > obstacleTop) {
                 return;
             }
             
@@ -75,10 +82,46 @@ function canMoveCastleEnemy01(direction, enemy) {
         }
     });
 
+    Array.prototype.forEach.call(characters, character => {
+        const characterTop = +window.getComputedStyle(character).top.replace('px', '');
+        const characterLeft = +window.getComputedStyle(character).left.replace('px', '');
+        
+        if (character.id === enemy.id) {
+            return;
+        }
+        
+        
+        if (direction === UP_DIRECTION || direction === DOWN_DIRECTION) {
+            if ((enemyLeft + enemy.width) <= (characterLeft) || enemyLeft >= (characterLeft + character.width)) {
+                return;
+            }
+            
+            let nextTopPosition = direction === UP_DIRECTION ? enemyTop - QT_PIXELS_MOVE : enemyTop + QT_PIXELS_MOVE;
+            
+            if ((nextTopPosition + enemy.height + 8) > (characterTop) && nextTopPosition - 36 <= characterTop) {
+                functionReturn = false;
+                return false;
+            }
+        }
+            
+        if (direction === RIGHT_DIRECTION || direction === LEFT_DIRECTION) {
+            if ((enemyTop + enemy.height) <= (characterTop) || enemyTop > characterTop) {
+                return;
+            }
+            
+            let nextLeftPosition = (direction === RIGHT_DIRECTION) ? enemyLeft + QT_PIXELS_MOVE : enemyLeft - QT_PIXELS_MOVE;
+
+            if ((nextLeftPosition + enemy.width) > (characterLeft) && nextLeftPosition <= (characterLeft + character.width)) {
+                functionReturn = false;
+                return false;
+            }
+        }
+    });
+
     return functionReturn;
 }
 
-function alterCastleEnemy01Position(direction, enemy) {
+function alterCastleEnemy01Position(direction, enemy, loopCastleEnemy01Position) {
     let pixelsToMove = QT_PIXELS_MOVE;
     let property = null;
     if (direction === UP_DIRECTION || direction === DOWN_DIRECTION)  {
@@ -99,7 +142,7 @@ function alterCastleEnemy01Position(direction, enemy) {
 
     let enemyPosition = +window.getComputedStyle(enemy)[property].replace('px', '');
     enemy.style[property] = `${enemyPosition + pixelsToMove}px`;
-    loopCastleEnemy01Position = setInterval(() => {
+    return setInterval(() => {
         if (!canMoveCastleEnemy01(direction, enemy)) {
             clearInterval(loopCastleEnemy01Position);
             return;
@@ -129,11 +172,11 @@ function moveCastleEnemy01() {
     }
 }
 
-function enemy_01_01() {
+function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
     let directionToMove = null;
     let lastDirection = null;
 
-    const enemy_01_01Object = document.getElementById('enemy_01_01');
+    const enemy_01_01Object = document.getElementById(id);
 
     setInterval(() => {
         if (!!lastDirection && !!canMoveCastleEnemy01(lastDirection, enemy_01_01Object)) {
@@ -148,7 +191,6 @@ function enemy_01_01() {
         do {
             let randomIndex = Math.floor(Math.random() * 4);
             directionTest = LIST_DIRECTIONS[randomIndex];
-            console.log(randomIndex);
             let directionWasTested = directionsTested.find(element => {
                 return element === directionTest;
             });
@@ -162,17 +204,13 @@ function enemy_01_01() {
         directionToMove = directionTest;
         lastDirection = directionToMove;
         
-        animateCastleEnemy01(directionToMove, enemy_01_01Object, LEG_LEFT);
-        alterCastleEnemy01Position(directionToMove, enemy_01_01Object);
+        loopCastleEnemy01Image = animateCastleEnemy01(directionToMove, enemy_01_01Object, LEG_LEFT);
+        loopCastleEnemy01Position = alterCastleEnemy01Position(directionToMove, enemy_01_01Object, loopCastleEnemy01Position);
     }, 200);
 };
 
-enemy_01_01();
+enemy_01('enemy_01_01', loopCastleEnemy0101Position, loopCastleEnemy0101Image);
 
-// const enemy01_02 = setInterval(() => {
-//     moveCastleEnemy01();
-// }, 200);
+enemy_01('enemy_01_02', loopCastleEnemy0102Position, loopCastleEnemy0102Image);
 
-// const enemy01_03 = setInterval(() => {
-//     moveCastleEnemy01();
-// }, 200);
+enemy_01('enemy_01_03', loopCastleEnemy0103Position, loopCastleEnemy0103Image);

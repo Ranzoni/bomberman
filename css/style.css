@@ -131,12 +131,13 @@ body {
 .enemy_01 {
     position: absolute;
     width: 30px;
+    height: 45px;
     z-index: 1;
 }
 
 #enemy_01_01 {
-    top: 144px;
-    left: 64px;
+    top: 140px;
+    left: 65.2px;
 }
 
 #enemy_01_02 {
