@@ -1,7 +1,9 @@
+let maxQtBombs = 1;
+
 function createBomb() {
     const bombermanComputed = window.getComputedStyle(bomberman);
     let bomb = document.createElement('img');
-    bomb.setAttribute('class', 'bomb');
+    bomb.setAttribute('class', 'bomb obstacle');
     bomb.style['opacity'] = 0;
     bomb.src = './img/bombs/01/bomb_01.png';
 
@@ -37,6 +39,10 @@ function animateBomb(bomb) {
 
 function canPutBomb() {
     const bombs = document.getElementsByClassName('bomb');
+    if (bombs.length >= maxQtBombs) {
+        return;
+    }
+
     const bombermanComputed = window.getComputedStyle(bomberman);
     let functionReturn = true;
 
