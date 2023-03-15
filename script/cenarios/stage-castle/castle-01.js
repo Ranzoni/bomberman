@@ -2,10 +2,12 @@ const gameBoard = document.getElementById('game-board');
 const obstacleWidth = 32;
 const obstacleHeight = 32;
 
+const parentCastleFolder = './img/stages/castle';
+
 function buildItem(lineNumber, colNumber, itemName, topItem, leftItem, esconder = false) {
     const idItem = `${itemName}-${lineNumber}-${colNumber}`;
     
-    gameBoard.innerHTML += `<img src="./img/stages/castle/${itemName}.png" id="${idItem}" class="obstacle ${itemName}">`;
+    gameBoard.innerHTML += `<img src="${parentCastleFolder}/${itemName}.png" id="${idItem}" class="obstacle ${itemName}">`;
     
     const item = document.querySelector(`#${idItem}`);
     
