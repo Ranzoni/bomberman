@@ -3,7 +3,11 @@ const DOWN_DIRECTION = 2;
 const LEFT_DIRECTION = 3;
 const RIGHT_DIRECTION = 4;
 
-const VELOCITY_ENEMY_01 = 27;
+const TIME_VELOCITY_ENEMY_01 = 27;
+
+const TIME_AIMATION_ENEMY_01 = 250;
+
+const TIME_CHECK_MOVE_ENEMY_01 = 200;
 
 const LIST_DIRECTIONS = [UP_DIRECTION, DOWN_DIRECTION, LEFT_DIRECTION, RIGHT_DIRECTION];
 
@@ -40,7 +44,7 @@ function animateCastleEnemy01(direction, enemy, legDirection) {
             enemy.src = `./img/stages/castle/enemies/01/${startImgName}_left.png`;
             legDirection = LEG_LEFT;
         }
-    }, 250);
+    }, TIME_AIMATION_ENEMY_01);
 }
 
 function canMoveCastleEnemy01(direction, enemy) {
@@ -89,10 +93,9 @@ function canMoveCastleEnemy01(direction, enemy) {
         if (character.id === enemy.id) {
             return;
         }
-        
-        
+
         if (direction === UP_DIRECTION || direction === DOWN_DIRECTION) {
-            if ((enemyLeft + enemy.width) <= (characterLeft) || enemyLeft >= (characterLeft + character.width)) {
+            if (enemyLeft !== characterLeft) {
                 return;
             }
             
@@ -103,12 +106,12 @@ function canMoveCastleEnemy01(direction, enemy) {
                 return false;
             }
         }
-            
+        
         if (direction === RIGHT_DIRECTION || direction === LEFT_DIRECTION) {
-            if ((enemyTop + enemy.height) <= (characterTop) || enemyTop > characterTop) {
+            if (enemyTop !== characterTop) {
                 return;
             }
-            
+
             let nextLeftPosition = (direction === RIGHT_DIRECTION) ? enemyLeft + QT_PIXELS_MOVE : enemyLeft - QT_PIXELS_MOVE;
 
             if ((nextLeftPosition + enemy.width) > (characterLeft) && nextLeftPosition <= (characterLeft + character.width)) {
@@ -150,26 +153,7 @@ function alterCastleEnemy01Position(direction, enemy, loopCastleEnemy01Position)
 
         enemyPosition = +window.getComputedStyle(enemy)[property].replace('px', '');
         enemy.style[property] = `${enemyPosition + pixelsToMove}px`;
-    }, VELOCITY_ENEMY_01);
-}
-
-function moveCastleEnemy01() {
-    let canMove = false;
-    let directionToMove = null;
-
-    for (var i = 0; i <= 3; i++) {
-        let directionTest = LIST_DIRECTIONS[i];
-        if (canMoveCastleEnemy01(directionTest)) {
-            canMove = true;
-            directionToMove = directionTest;
-            break;
-        }
-    }
-
-    if (!!canMove) {
-        animateBomberman(directionToMove);
-        alterBombermanPosition(directionToMove);
-    }
+    }, TIME_VELOCITY_ENEMY_01);
 }
 
 function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
@@ -188,12 +172,17 @@ function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
 
         let directionTest = null;
         let directionsTested = [];
+        let directionsToTest = [];
         do {
-            let randomIndex = Math.floor(Math.random() * 4);
-            directionTest = LIST_DIRECTIONS[randomIndex];
+            directionsToTest = LIST_DIRECTIONS.filter(direction => {
+                return !directionsTested.find(directionTested => direction === directionTested);
+            });
+            let randomIndex = Math.floor(Math.random() * (directionsToTest.length));
+            directionTest = directionsToTest[randomIndex];
             let directionWasTested = directionsTested.find(element => {
                 return element === directionTest;
             });
+
             if (!!directionWasTested) {
                 continue;
             }
@@ -206,7 +195,7 @@ function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
         
         loopCastleEnemy01Image = animateCastleEnemy01(directionToMove, enemy_01_01Object, LEG_LEFT);
         loopCastleEnemy01Position = alterCastleEnemy01Position(directionToMove, enemy_01_01Object, loopCastleEnemy01Position);
-    }, 200);
+    }, TIME_CHECK_MOVE_ENEMY_01);
 };
 
 enemy_01('enemy_01_01', loopCastleEnemy0101Position, loopCastleEnemy0101Image);
