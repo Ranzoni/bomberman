@@ -6,18 +6,10 @@ function createBomb() {
     bomb.src = './img/bombs/01/bomb_01.png';
 
     let bottomInNumber = +bombermanComputed.bottom.replace('px', '');
-    if (bottomInNumber % 32 === 0) {
-        bomb.style['bottom'] = bombermanComputed.bottom;
-    } else {
-        bomb.style['bottom'] = `${Math.round(bottomInNumber / 32) * 32}px`;
-    }
+    bomb.style['bottom'] = (bottomInNumber % 32 === 0) ? bombermanComputed.bottom : `${Math.round(bottomInNumber / 32) * 32}px`;
 
     let leftInNumber = +bombermanComputed.left.replace('px', '');
-    if (leftInNumber % 32 === 0) {
-        bomb.style['left'] = bombermanComputed.left;
-    } else {
-        bomb.style['left'] = `${Math.round(leftInNumber / 32) * 32}px`;
-    }
+    bomb.style['left'] = (leftInNumber % 32 === 0) ? bombermanComputed.left : `${Math.round(leftInNumber / 32) * 32}px`;
 
     return bomb;
 }
@@ -43,7 +35,38 @@ function animateBomb(bomb) {
     }, 250);
 }
 
+function canPutBomb() {
+    const bombs = document.getElementsByClassName('bomb');
+    const bombermanComputed = window.getComputedStyle(bomberman);
+    let functionReturn = true;
+
+    Array.prototype.forEach.call(bombs, bomb => {
+        let bottomNextBomb;
+        let leftNextBomb;
+
+        let bottomInNumber = +bombermanComputed.bottom.replace('px', '');
+        bottomNextBomb = (bottomInNumber % 32 === 0) ? bombermanComputed.bottom : Math.round(bottomInNumber / 32) * 32;
+
+        let leftInNumber = +bombermanComputed.left.replace('px', '');
+        leftNextBomb = (leftInNumber % 32 === 0) ? +bombermanComputed.left.replace('px', '') : Math.round(leftInNumber / 32) * 32;
+        
+        let bottomBomb = +bomb.style['bottom'].replace('px', '');
+        let leftBomb = +bomb.style['left'].replace('px', '');
+
+        if (bottomBomb === bottomNextBomb && leftBomb === leftNextBomb) {
+            functionReturn = false;
+            return false;
+        }
+    });
+
+    return functionReturn;
+}
+
 function putBomb() {
+    if (!canPutBomb()) {
+        return;
+    }
+
     let bombCreated = createBomb();
 
     let bombAnimation = animateBomb(bombCreated);
