@@ -10,6 +10,8 @@ const KEY_ARROW_DOWN = 'ArrowDown';
 const KEY_ARROW_RIGHT = 'ArrowRight';
 const KEY_ARROW_LEFT = 'ArrowLeft';
 
+const MOVE_KEYS = [KEY_ARROW_UP, KEY_ARROW_DOWN, KEY_ARROW_RIGHT, KEY_ARROW_LEFT];
+
 let onMove = false;
 let lastKeyDirection = null;
 
@@ -165,9 +167,19 @@ function clearBombermanIntervals() {
 }
 
 document.addEventListener('keydown', (e) => {
+    let isMoveKey = MOVE_KEYS.find(element => element === e.key);
+    if (!isMoveKey) {
+        return;
+    }
+    
     moveBomberman(e.key);
 });
 
 document.addEventListener('keyup', (e) => {
+    let isMoveKey = MOVE_KEYS.find(element => element === e.key);
+    if (!isMoveKey) {
+        return;
+    }
+
     stopBomberman(e.key);
 });
