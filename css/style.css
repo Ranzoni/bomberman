@@ -1,5 +1,6 @@
 body {
     background-color: green;
+    margin: 0
 }
 
 #game-board {
@@ -136,7 +137,7 @@ body {
 }
 
 #enemy_01_01 {
-    top: 140px;
+    top: 142px;
     left: 65.2px;
 }
 
@@ -148,4 +149,10 @@ body {
 #enemy_01_03 {
     top: 270px;
     left: 352px;
+}
+
+.bomb {
+    position: absolute;
+    width: 32px;
+    z-index: 0;
 }

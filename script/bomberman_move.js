@@ -10,6 +10,8 @@ const KEY_ARROW_DOWN = 'ArrowDown';
 const KEY_ARROW_RIGHT = 'ArrowRight';
 const KEY_ARROW_LEFT = 'ArrowLeft';
 
+const MOVE_KEYS = [KEY_ARROW_UP, KEY_ARROW_DOWN, KEY_ARROW_RIGHT, KEY_ARROW_LEFT];
+
 let onMove = false;
 let lastKeyDirection = null;
 
@@ -58,24 +60,33 @@ function canMoveBomberman(keyDown) {
         const obstacleTop = +window.getComputedStyle(obstacle).top.replace('px', '');
         const obstacleLeft = +window.getComputedStyle(obstacle).left.replace('px', '');
 
+        
         if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN) {
             if ((bombermanLeft + bomberman.width) <= (obstacleLeft + 4) || bombermanLeft >= (obstacleLeft + obstacle.width - 4)) {
                 return;
             }
 
-            let nextTopPosition = keyDown === KEY_ARROW_UP ? bombermanTop - QT_PIXELS_MOVE : bombermanTop + QT_PIXELS_MOVE;
+            if ((bombermanTop + bomberman.height) > (obstacleTop + 2) && bombermanTop <= obstacleTop) {
+                return;
+            }
 
+            let nextTopPosition = keyDown === KEY_ARROW_UP ? bombermanTop - QT_PIXELS_MOVE : bombermanTop + QT_PIXELS_MOVE;
+            
             if ((nextTopPosition + bomberman.height) > (obstacleTop + 2) && nextTopPosition <= obstacleTop) {
                 functionReturn = false;
                 return false;
             }
         }
-            
+        
         if (keyDown === KEY_ARROW_RIGHT || keyDown === KEY_ARROW_LEFT) {
             if ((bombermanTop + bomberman.height) <= (obstacleTop + 2) || bombermanTop > obstacleTop) {
                 return;
             }
             
+            if ((bombermanLeft + bomberman.width) > (obstacleLeft + 4) && bombermanLeft <= (obstacleLeft + obstacle.width - 4)) {
+                return;
+            }
+
             let nextLeftPosition = (keyDown === KEY_ARROW_RIGHT) ? bombermanLeft + QT_PIXELS_MOVE : bombermanLeft - QT_PIXELS_MOVE;
 
             if ((nextLeftPosition + bomberman.width) > (obstacleLeft + 4) && nextLeftPosition <= (obstacleLeft + obstacle.width - 4)) {
@@ -165,9 +176,19 @@ function clearBombermanIntervals() {
 }
 
 document.addEventListener('keydown', (e) => {
+    let isMoveKey = MOVE_KEYS.find(element => element === e.key);
+    if (!isMoveKey) {
+        return;
+    }
+    
     moveBomberman(e.key);
 });
 
 document.addEventListener('keyup', (e) => {
+    let isMoveKey = MOVE_KEYS.find(element => element === e.key);
+    if (!isMoveKey) {
+        return;
+    }
+
     stopBomberman(e.key);
 });
