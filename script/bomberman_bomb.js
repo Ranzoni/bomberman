@@ -19,6 +19,23 @@ function createBomb() {
     return bomb;
 }
 
+function existsObstacle(leftPosition, bottomPosition) {
+    const obstaclesToEnemies = document.getElementsByClassName('obstacle');
+    let functionReturn = false;
+
+    Array.prototype.forEach.call(obstaclesToEnemies, obstacle => {
+        const obstacleBottom = +window.getComputedStyle(obstacle).bottom.replace('px', '');
+        const obstacleLeft = +window.getComputedStyle(obstacle).left.replace('px', '');
+
+        if (obstacleBottom === bottomPosition && obstacleLeft === leftPosition) {
+            functionReturn = true;
+            return;
+        }
+    });
+
+    return functionReturn;
+}
+
 function createExplosion(bomb) {
     let arrayExplosions = [];
     let explosion = document.createElement('img');
@@ -31,7 +48,7 @@ function createExplosion(bomb) {
     arrayExplosions.push(explosion);
 
     for (let i = 1; i <= 4; i++) {
-        let direction = i % 2 === 0 ? 'horizontal' : 'vertical';
+        let direction = i % 2 === 0 ? 'vertical' : 'horizontal';
         let bottomExplosion = +explosion.style['bottom'].replace('px', '');
         let leftExplosion = +explosion.style['left'].replace('px', '');
         let sizeLeftExplosion = 32;
@@ -44,10 +61,14 @@ function createExplosion(bomb) {
         }
 
         for (let j = 1; j <= bombSize; j++) {
-            if (i === 1 || i === 2) {
+            if (i === 1 || i === 3) {
                 leftExplosion += sizeLeftExplosion;
             } else {
                 bottomExplosion += sizeBottomExplosion;
+            }
+            
+            if (existsObstacle(leftExplosion, bottomExplosion)) {
+                return;
             }
 
             let trailExplosion = document.createElement('img');
@@ -64,7 +85,11 @@ function createExplosion(bomb) {
         } else {
             bottomExplosion += sizeBottomExplosion;
         }
-        
+
+        if (existsObstacle(leftExplosion, bottomExplosion)) {
+            continue;
+        }
+
         let tipExplosion = document.createElement('img');
         tipExplosion.setAttribute('class', 'bomb');
         tipExplosion.style['opacity'] = 0;
@@ -74,8 +99,6 @@ function createExplosion(bomb) {
         arrayExplosions.push(tipExplosion);
     }
 
-    console.log(arrayExplosions);
-     
     return arrayExplosions;
 }
 
