@@ -40,6 +40,7 @@ function createExplosion(bomb) {
     let arrayExplosions = [];
     let explosion = document.createElement('img');
     explosion.setAttribute('class', 'bomb');
+    explosion.classList.add('explosion');
     explosion.style['opacity'] = 0;
     explosion.src = './img/bombs/01/explosion_central_01.png';
     explosion.style['bottom'] = bomb.style['bottom'];
@@ -73,6 +74,7 @@ function createExplosion(bomb) {
 
             let trailExplosion = document.createElement('img');
             trailExplosion.setAttribute('class', 'bomb');
+            trailExplosion.classList.add('explosion');
             trailExplosion.style['opacity'] = 0;
             trailExplosion.src = `./img/bombs/01/explosion_trail_${direction}_01.png`;
             trailExplosion.style['bottom'] = `${bottomExplosion}px`;
@@ -92,6 +94,7 @@ function createExplosion(bomb) {
 
         let tipExplosion = document.createElement('img');
         tipExplosion.setAttribute('class', 'bomb');
+        tipExplosion.classList.add('explosion');
         tipExplosion.style['opacity'] = 0;
         tipExplosion.src = `./img/bombs/01/explosion_tip_${LIST_DESCRIPTION_DIRECTION[i-1]}_01.png`;
         tipExplosion.style['bottom'] = `${bottomExplosion}px`;
@@ -177,11 +180,10 @@ function putBomb() {
     }
 
     let bombCreated = createBomb();
-    
     let bombAnimation = animateBomb(bombCreated);
     
     document.getElementById('game-board').appendChild(bombCreated);
-    
+
     let listExplosionCreated = createExplosion(bombCreated);
     listExplosionCreated.forEach(explosionCreated => {        
         document.getElementById('game-board').appendChild(explosionCreated);
@@ -199,7 +201,7 @@ function putBomb() {
 }
 
 document.addEventListener('keydown', (e) => {
-    if (e.code !== 'Space') {
+    if (!!bombermanIsDead() || e.code !== 'Space') {
         return;
     }
 

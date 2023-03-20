@@ -51,7 +51,7 @@ function canMoveCastleEnemy01(direction, enemy) {
     const enemyTop = +window.getComputedStyle(enemy).top.replace('px', '');
     const enemyLeft = +window.getComputedStyle(enemy).left.replace('px', '');
     const obstaclesToEnemies = document.getElementsByClassName('obstacle');
-    const characters = document.getElementsByClassName('character');
+    const characters = document.getElementsByClassName('enemy');
 
     let functionReturn = true;
 
@@ -157,12 +157,19 @@ function alterCastleEnemy01Position(direction, enemy, loopCastleEnemy01Position)
 }
 
 function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
+    
     let directionToMove = null;
     let lastDirection = null;
-
+    
     const enemy_01_01Object = document.getElementById(id);
-
+    
     setInterval(() => {
+        if (!!bombermanIsDead()) {
+            clearInterval(loopCastleEnemy01Position);
+            clearInterval(loopCastleEnemy01Image);
+            return;
+        }
+
         if (!!lastDirection && !!canMoveCastleEnemy01(lastDirection, enemy_01_01Object)) {
             return;
         }

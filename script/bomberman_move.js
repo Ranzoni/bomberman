@@ -59,7 +59,6 @@ function canMoveBomberman(keyDown) {
     Array.prototype.forEach.call(obstacles, obstacle => {
         const obstacleTop = +window.getComputedStyle(obstacle).top.replace('px', '');
         const obstacleLeft = +window.getComputedStyle(obstacle).left.replace('px', '');
-
         
         if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN) {
             if ((bombermanLeft + bomberman.width) <= (obstacleLeft + 4) || bombermanLeft >= (obstacleLeft + obstacle.width - 4)) {
@@ -175,9 +174,14 @@ function clearBombermanIntervals() {
     clearInterval(loopBombermanPosition);
 }
 
+function bombermanIsDead() {
+    return document.getElementsByClassName('dead').length > 0;
+}
+
 document.addEventListener('keydown', (e) => {
     let isMoveKey = MOVE_KEYS.find(element => element === e.key);
-    if (!isMoveKey) {
+
+    if (!!bombermanIsDead() || !isMoveKey) {
         return;
     }
     
@@ -186,9 +190,72 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('keyup', (e) => {
     let isMoveKey = MOVE_KEYS.find(element => element === e.key);
-    if (!isMoveKey) {
+
+    if (!!bombermanIsDead() || !isMoveKey) {
         return;
     }
 
     stopBomberman(e.key);
 });
+
+function bombermanDie(bomberman) {
+    const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
+    const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
+    const explosions = document.getElementsByClassName('explosion');
+    let functionReturn = false;
+
+    Array.prototype.forEach.call(explosions, explosion => {
+        if (explosion.style['opacity'] !== '1') {
+            return;
+        }
+
+        const explosionTop = +window.getComputedStyle(explosion).top.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
+
+        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
+            functionReturn = true;
+            return false;
+        }
+    });
+
+    const enemies = document.getElementsByClassName('enemy');
+    Array.prototype.forEach.call(enemies, enemy => {
+        const explosionTop = +window.getComputedStyle(enemy).top.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(enemy).left.replace('px', '');
+
+        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + enemy.width - 4))) {
+            functionReturn = true;
+            return false;
+        }
+    });
+
+    return functionReturn;
+}
+
+async function animateBombermanDeath(bomberman) {
+    let animationCounter = 1;
+    let animationBombermanDeath = setInterval(() => {
+        bomberman.style['width'] = '28px';
+        bomberman.src = `./img/bomberman/lose/move_${String(animationCounter).padStart(2, '0')}.png`;
+        bomberman.setAttribute('class', 'dead');
+        
+        if (++animationCounter > 10) {
+            clearInterval(animationBombermanDeath);
+            return;
+        }
+    }, 200);
+}
+
+let checkIfBombermanIsDead = setInterval(() => {
+    const bomberman = document.getElementById('bomberman');
+
+    if (!bombermanDie(bomberman)) {
+        return;
+    }
+    
+    clearInterval(loopBombermanImage);
+    clearInterval(loopBombermanPosition);
+    clearInterval(checkIfBombermanIsDead);
+    
+    animateBombermanDeath(bomberman);
+}, 10);
