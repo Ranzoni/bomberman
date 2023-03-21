@@ -4,18 +4,15 @@ const obstacleHeight = 32;
 
 const parentCastleFolder = './img/stages/castle';
 
-function buildItem(lineNumber, colNumber, itemName, topItem, leftItem, esconder = false) {
+function buildItem(lineNumber, colNumber, itemName, topItem, leftItem, className = itemName) {
     const idItem = `${itemName}-${lineNumber}-${colNumber}`;
     
-    gameBoard.innerHTML += `<img src="${parentCastleFolder}/${itemName}.png" id="${idItem}" class="obstacle ${itemName}">`;
+    gameBoard.innerHTML += `<img src="${parentCastleFolder}/${itemName}.png" id="${idItem}" class="obstacle ${className}">`;
     
     const item = document.querySelector(`#${idItem}`);
     
     item.style.top = `${topItem}px`;
     item.style.left = `${leftItem}px`;
-    if (esconder) {
-        item.style.zIndex = '-1';
-    }
 }
 
 function loopToBuildFixedObstacles() {
@@ -46,43 +43,43 @@ function loopToBuildFixedObstacles() {
 }
 
 function buildChests() {
-    buildItem(1, 1, 'chest', 64, 64);
-    buildItem(1, 2, 'chest', 64, 128);
-    buildItem(1, 3, 'chest', 64, 192);
-    buildItem(1, 4, 'chest', 64, 256);
+    buildItem(1, 1, 'chest', 64, 64, 'chest destructible');
+    buildItem(1, 2, 'chest', 64, 128, 'chest destructible');
+    buildItem(1, 3, 'chest', 64, 192, 'chest destructible');
+    buildItem(1, 4, 'chest', 64, 256, 'chest destructible');
 
-    buildItem(2, 1, 'chest', 96, 288);
-    buildItem(2, 2, 'chest', 96, 448);
+    buildItem(2, 1, 'chest', 96, 288, 'chest destructible');
+    buildItem(2, 2, 'chest', 96, 448, 'chest destructible');
 
-    buildItem(3, 1, 'chest', 128, 192);
-    buildItem(3, 2, 'chest', 128, 448);
+    buildItem(3, 1, 'chest', 128, 192, 'chest destructible');
+    buildItem(3, 2, 'chest', 128, 448, 'chest destructible');
 
-    buildItem(4, 1, 'chest', 160, 96);
-    buildItem(4, 2, 'chest', 160, 288);
+    buildItem(4, 1, 'chest', 160, 96, 'chest destructible');
+    buildItem(4, 2, 'chest', 160, 288, 'chest destructible');
 
-    buildItem(5, 1, 'chest', 224, 160);
-    buildItem(5, 2, 'chest', 224, 192);
-    buildItem(5, 3, 'chest', 224, 224);
-    buildItem(5, 4, 'chest', 224, 288);
-    buildItem(5, 5, 'chest', 224, 320);
-    buildItem(5, 6, 'chest', 224, 352);
+    buildItem(5, 1, 'chest', 224, 160, 'chest destructible');
+    buildItem(5, 2, 'chest', 224, 192, 'chest destructible');
+    buildItem(5, 3, 'chest', 224, 224, 'chest destructible');
+    buildItem(5, 4, 'chest', 224, 288, 'chest destructible');
+    buildItem(5, 5, 'chest', 224, 320, 'chest destructible');
+    buildItem(5, 6, 'chest', 224, 352, 'chest destructible');
 
-    buildItem(6, 1, 'chest', 256, 192);
-    buildItem(6, 2, 'chest', 256, 320);
+    buildItem(6, 1, 'chest', 256, 192, 'chest destructible');
+    buildItem(6, 2, 'chest', 256, 320, 'chest destructible');
 
-    buildItem(7, 1, 'chest', 288, 192);
-    buildItem(7, 2, 'chest', 288, 320);
+    buildItem(7, 1, 'chest', 288, 192, 'chest destructible');
+    buildItem(7, 2, 'chest', 288, 320, 'chest destructible');
 
-    buildItem(8, 1, 'chest', 320, 192);
-    buildItem(8, 2, 'chest', 320, 256);
-    buildItem(8, 3, 'chest', 320, 320);
+    buildItem(8, 1, 'chest', 320, 192, 'chest destructible');
+    buildItem(8, 2, 'chest', 320, 256, 'chest destructible');
+    buildItem(8, 3, 'chest', 320, 320, 'chest destructible');
 
-    buildItem(9, 1, 'chest', 352, 64);
-    buildItem(9, 2, 'chest', 352, 96);
-    buildItem(9, 3, 'chest', 352, 128);
-    buildItem(9, 4, 'chest', 352, 384);
-    buildItem(9, 5, 'chest', 352, 416);
-    buildItem(9, 6, 'chest', 352, 448);
+    buildItem(9, 1, 'chest', 352, 64, 'chest destructible');
+    buildItem(9, 2, 'chest', 352, 96, 'chest destructible');
+    buildItem(9, 3, 'chest', 352, 128, 'chest destructible');
+    buildItem(9, 4, 'chest', 352, 384, 'chest destructible');
+    buildItem(9, 5, 'chest', 352, 416, 'chest destructible');
+    buildItem(9, 6, 'chest', 352, 448, 'chest destructible');
 }
 
 function buildWalls() {

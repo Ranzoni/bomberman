@@ -36,16 +36,28 @@ function existsObstacle(leftPosition, bottomPosition) {
     return functionReturn;
 }
 
-function createExplosion(bomb) {
-    let arrayExplosions = [];
+function addTrailExplosion(img, bottom, left, isTip = false) {
     let explosion = document.createElement('img');
     explosion.setAttribute('class', 'bomb');
     explosion.classList.add('explosion');
-    explosion.style['opacity'] = 0;
-    explosion.src = './img/bombs/01/explosion_central_01.png';
-    explosion.style['bottom'] = bomb.style['bottom'];
-    explosion.style['left'] = bomb.style['left'];
+    if (!!isTip) {
+        explosion.classList.add('tip');
+    }
 
+    explosion.style['opacity'] = 0;
+    explosion.src = img;
+    explosion.style['bottom'] = bottom;
+    explosion.style['left'] = left;
+
+    return explosion;
+}
+
+function createExplosion(bomb) {
+    let arrayExplosions = [];
+
+    let explosion = addTrailExplosion('./img/bombs/01/explosion_central_01.png',
+        bomb.style['bottom'],
+        bomb.style['left']);
     arrayExplosions.push(explosion);
 
     for (let i = 1; i <= 4; i++) {
@@ -72,13 +84,9 @@ function createExplosion(bomb) {
                 return;
             }
 
-            let trailExplosion = document.createElement('img');
-            trailExplosion.setAttribute('class', 'bomb');
-            trailExplosion.classList.add('explosion');
-            trailExplosion.style['opacity'] = 0;
-            trailExplosion.src = `./img/bombs/01/explosion_trail_${direction}_01.png`;
-            trailExplosion.style['bottom'] = `${bottomExplosion}px`;
-            trailExplosion.style['left'] = `${leftExplosion}px`;
+            let trailExplosion = addTrailExplosion(`./img/bombs/01/explosion_trail_${direction}_01.png`,
+                `${bottomExplosion}px`,
+                `${leftExplosion}px`);
             arrayExplosions.push(trailExplosion);
         }
 
@@ -92,13 +100,10 @@ function createExplosion(bomb) {
             continue;
         }
 
-        let tipExplosion = document.createElement('img');
-        tipExplosion.setAttribute('class', 'bomb');
-        tipExplosion.classList.add('explosion');
-        tipExplosion.style['opacity'] = 0;
-        tipExplosion.src = `./img/bombs/01/explosion_tip_${LIST_DESCRIPTION_DIRECTION[i-1]}_01.png`;
-        tipExplosion.style['bottom'] = `${bottomExplosion}px`;
-        tipExplosion.style['left'] = `${leftExplosion}px`;
+        let tipExplosion = addTrailExplosion(`./img/bombs/01/explosion_tip_${LIST_DESCRIPTION_DIRECTION[i-1]}_01.png`,
+            `${bottomExplosion}px`,
+            `${leftExplosion}px`,
+            true);
         arrayExplosions.push(tipExplosion);
     }
 
@@ -136,11 +141,55 @@ function animateExplosion(explosion) {
 
         explosion.src = explosion.src.substr(0, explosion.src.length-5) + `${counterImgAnimation}.png`;
 
+        
         if (counterImgAnimation >= 5) {
             clearInterval(explosionAnimation);
             document.getElementById('game-board').removeChild(explosion);
         }
     }, 100);
+    
+    if (explosion.classList.contains('tip')) {
+        return;
+    }
+
+    const destructibleObjects = document.getElementsByClassName('destructible');
+    Array.prototype.forEach.call(destructibleObjects, destructibleObject => {
+        const objectBottom = +window.getComputedStyle(destructibleObject).bottom.replace('px', '');
+        const objectLeft = +window.getComputedStyle(destructibleObject).left.replace('px', '');
+        const explosionBottom = +window.getComputedStyle(explosion).bottom.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
+
+        if ((objectBottom === explosionBottom + 32 && objectLeft === explosionLeft) ||
+            (objectBottom === explosionBottom - 32 && objectLeft === explosionLeft) ||
+            (objectBottom === explosionBottom && objectLeft === explosionLeft + 32) ||
+            (objectBottom === explosionBottom && objectLeft === explosionLeft - 32)) {
+            let animationCounter = 1;
+            let animationObject = setInterval(() => {
+                destructibleObject.src = `./img/stages/castle/chest_destroyed_0${animationCounter}.png`;
+
+                if (++animationCounter > 6) {
+                    clearInterval(animationObject);
+                    document.getElementById('game-board').removeChild(destructibleObject);
+                }
+            }, 100);
+        }
+    });
+
+    const magnets = document.getElementsByClassName('magnet');
+    Array.prototype.forEach.call(magnets, magnet => {
+        const magnetBottom = +window.getComputedStyle(magnet).bottom.replace('px', '');
+        const magnetLeft = +window.getComputedStyle(magnet).left.replace('px', '');
+        const explosionBottom = +window.getComputedStyle(explosion).bottom.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
+
+        if ((magnetBottom === explosionBottom + 32 && magnetLeft === explosionLeft) ||
+            (magnetBottom === explosionBottom - 32 && magnetLeft === explosionLeft) ||
+            (magnetBottom === explosionBottom && magnetLeft === explosionLeft + 32) ||
+            (magnetBottom === explosionBottom && magnetLeft === explosionLeft - 32)) {
+            let deg = +magnet.style.transform.replace('rotate(', '').replace('deg)', '') + 90;
+            magnet.style.transform = `rotate(${deg}deg)`;
+        }
+    });
 }
 
 function canPutBomb() {
