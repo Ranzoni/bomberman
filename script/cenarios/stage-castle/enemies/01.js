@@ -156,8 +156,37 @@ function alterCastleEnemy01Position(direction, enemy, loopCastleEnemy01Position)
     }, TIME_VELOCITY_ENEMY_01);
 }
 
+function animateEnemyDeath(enemy) {
+    enemy.src = './img/stages/castle/enemies/01/dying.png';
+    setTimeout(() => {
+        enemy.style['opacity'] = '0';
+    }, 300);
+}
+
+function enemy01Die(enemy) {
+    const enemyTop = +window.getComputedStyle(enemy).top.replace('px', '');
+    const enemyLeft = +window.getComputedStyle(enemy).left.replace('px', '');
+    const explosions = document.getElementsByClassName('explosion');
+    let functionReturn = false;
+
+    Array.prototype.forEach.call(explosions, explosion => {
+        if (explosion.style['opacity'] !== '1') {
+            return;
+        }
+
+        const explosionTop = +window.getComputedStyle(explosion).top.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
+
+        if (((enemyTop + enemy.height + 4) > (explosionTop) && enemyTop - 12 <= explosionTop) && ((enemyLeft + enemy.width) > (explosionLeft) && enemyLeft <= (explosionLeft + explosion.width))) {
+            functionReturn = true;
+            return false;
+        }
+    });
+
+    return functionReturn;
+}
+
 function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
-    
     let directionToMove = null;
     let lastDirection = null;
     
@@ -203,6 +232,18 @@ function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
         loopCastleEnemy01Image = animateCastleEnemy01(directionToMove, enemy_01_01Object, LEG_LEFT);
         loopCastleEnemy01Position = alterCastleEnemy01Position(directionToMove, enemy_01_01Object, loopCastleEnemy01Position);
     }, TIME_CHECK_MOVE_ENEMY_01);
+
+    let checkIfEnemyIsDead = setInterval(() => {    
+        if (!enemy01Die(enemy_01_01Object)) {
+            return;
+        }
+        clearInterval(loopCastleEnemy01Image);
+        clearInterval(loopCastleEnemy01Position);
+
+        animateEnemyDeath(enemy_01_01Object);
+        
+        clearInterval(checkIfEnemyIsDead);
+    }, 10);
 };
 
 enemy_01('enemy_01_01', loopCastleEnemy0101Position, loopCastleEnemy0101Image);
