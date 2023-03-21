@@ -232,7 +232,7 @@ function bombermanDie(bomberman) {
     return functionReturn;
 }
 
-async function animateBombermanDeath(bomberman) {
+function animateBombermanDeath(bomberman) {
     let animationCounter = 1;
     let animationBombermanDeath = setInterval(() => {
         bomberman.style['width'] = '28px';
