@@ -119,6 +119,7 @@ body {
     position: absolute;
     width: 32px;
     top: 320px;
+    transition: all 0.7s;
 }
 
 #magnet-01 {
