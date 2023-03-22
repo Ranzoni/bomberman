@@ -146,6 +146,65 @@ function buildWalls() {
     }
 }
 
+function animateOpenDoor() {
+    const door01 = document.getElementById('door-01-01');
+    const door02 = document.getElementById('door-01-02');
+    const door03 = document.getElementById('door-02-01');
+    const door04 = document.getElementById('door-02-02');
+
+    let complementDirImgBefore = 'closed';
+    let i = 1;
+    let animationDoorOpen = setInterval(() => {
+        let complementDirImg = i === 1 ? 'partially_open' : 'opened';
+        door01.src = door01.src.replace(complementDirImgBefore, complementDirImg);
+        door02.src = door02.src.replace(complementDirImgBefore, complementDirImg);
+        door03.src = door03.src.replace(complementDirImgBefore, complementDirImg);
+        door04.src = door04.src.replace(complementDirImgBefore, complementDirImg);
+
+        if (++i > 2) {
+            clearInterval(animationDoorOpen);
+        }
+
+        complementDirImgBefore = complementDirImg;
+    }, 100);
+}
+
+function existsAnyEnemy() {
+    return document.getElementsByClassName('enemy').length > 0;
+}
+
+let checkIfButtonWasPressed = setInterval(() => {
+    const button = document.getElementById('button');
+
+    const explosions = document.getElementsByClassName('explosion');
+
+    if (!!existsAnyEnemy()) {
+        return;
+    }
+    
+    Array.prototype.forEach.call(explosions, explosion => {
+        if (explosion.classList.contains('tip') || explosion.style['opacity'] !== '1') {
+            return;
+        }
+
+        const objectBottom = +window.getComputedStyle(button).bottom.replace('px', '');
+        const objectLeft = +window.getComputedStyle(button).left.replace('px', '');
+        const explosionBottom = +window.getComputedStyle(explosion).bottom.replace('px', '');
+        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
+
+        if ((objectBottom === explosionBottom + 32 && objectLeft === explosionLeft) ||
+            (objectBottom === explosionBottom - 32 && objectLeft === explosionLeft) ||
+            (objectBottom === explosionBottom && objectLeft === explosionLeft + 32) ||
+            (objectBottom === explosionBottom && objectLeft === explosionLeft - 32)) {
+
+            button.src = './img/stages/castle/button_pressed.png';
+            clearInterval(checkIfButtonWasPressed);
+            animateOpenDoor();
+        }
+    }, 50);
+
+}, 10);
+
 loopToBuildFixedObstacles();
 buildChests();
 buildWalls();
