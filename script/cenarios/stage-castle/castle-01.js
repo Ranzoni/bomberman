@@ -146,7 +146,7 @@ function buildWalls() {
     }
 }
 
-function openDoor() {
+function animateOpenDoor() {
     const door01 = document.getElementById('door-01-01');
     const door02 = document.getElementById('door-01-02');
     const door03 = document.getElementById('door-02-01');
@@ -169,11 +169,19 @@ function openDoor() {
     }, 100);
 }
 
+function existsAnyEnemy() {
+    return document.getElementsByClassName('enemy').length > 0;
+}
+
 let checkIfButtonWasPressed = setInterval(() => {
     const button = document.getElementById('button');
 
     const explosions = document.getElementsByClassName('explosion');
 
+    if (!!existsAnyEnemy()) {
+        return;
+    }
+    
     Array.prototype.forEach.call(explosions, explosion => {
         if (explosion.classList.contains('tip') || explosion.style['opacity'] !== '1') {
             return;
@@ -188,9 +196,10 @@ let checkIfButtonWasPressed = setInterval(() => {
             (objectBottom === explosionBottom - 32 && objectLeft === explosionLeft) ||
             (objectBottom === explosionBottom && objectLeft === explosionLeft + 32) ||
             (objectBottom === explosionBottom && objectLeft === explosionLeft - 32)) {
+
             button.src = './img/stages/castle/button_pressed.png';
             clearInterval(checkIfButtonWasPressed);
-            openDoor();
+            animateOpenDoor();
         }
     }, 50);
 

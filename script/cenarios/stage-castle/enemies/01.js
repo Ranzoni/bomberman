@@ -237,10 +237,12 @@ function enemy_01(id, loopCastleEnemy01Position, loopCastleEnemy01Image) {
         if (!enemy01Die(enemy_01_01Object)) {
             return;
         }
+
         clearInterval(loopCastleEnemy01Image);
         clearInterval(loopCastleEnemy01Position);
 
         animateEnemyDeath(enemy_01_01Object);
+        document.getElementById('game-board').removeChild(enemy_01_01Object);
         
         clearInterval(checkIfEnemyIsDead);
     }, 10);
