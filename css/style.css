@@ -43,23 +43,23 @@ body {
 }
 
 #door-01-01 {
-    top: 58px;
-    left: 369px;
+    top: 64px;
+    left: 368px;
 }
 
 #door-01-02 {
-    top: 58px;
-    left: 399px;
+    top: 64px;
+    left: 398px;
 }
 
 #door-02-01 {
-    top: 95px;
-    left: 369px;
+    top: 96px;
+    left: 368px;
 }
 
 #door-02-02 {
-    top: 95px;
-    left: 399px;
+    top: 96px;
+    left: 398px;
 }
 
 .wall-door {

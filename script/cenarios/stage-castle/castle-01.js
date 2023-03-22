@@ -146,52 +146,27 @@ function buildWalls() {
     }
 }
 
-function bombermanDie(bomberman) {
-    const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
-    const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
-    const explosions = document.getElementsByClassName('explosion');
-    let functionReturn = false;
+function openDoor() {
+    const door01 = document.getElementById('door-01-01');
+    const door02 = document.getElementById('door-01-02');
+    const door03 = document.getElementById('door-02-01');
+    const door04 = document.getElementById('door-02-02');
 
-    Array.prototype.forEach.call(explosions, explosion => {
-        if (explosion.style['opacity'] !== '1') {
-            return;
+    let complementDirImgBefore = 'closed';
+    let i = 1;
+    let animationDoorOpen = setInterval(() => {
+        let complementDirImg = i === 1 ? 'partially_open' : 'opened';
+        door01.src = door01.src.replace(complementDirImgBefore, complementDirImg);
+        door02.src = door02.src.replace(complementDirImgBefore, complementDirImg);
+        door03.src = door03.src.replace(complementDirImgBefore, complementDirImg);
+        door04.src = door04.src.replace(complementDirImgBefore, complementDirImg);
+
+        if (++i > 2) {
+            clearInterval(animationDoorOpen);
         }
 
-        const explosionTop = +window.getComputedStyle(explosion).top.replace('px', '');
-        const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
-
-        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
-            functionReturn = true;
-            return false;
-        }
-    });
-
-    const enemies = document.getElementsByClassName('enemy');
-    Array.prototype.forEach.call(enemies, enemy => {
-        const explosionTop = +window.getComputedStyle(enemy).top.replace('px', '');
-        const explosionLeft = +window.getComputedStyle(enemy).left.replace('px', '');
-
-        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + enemy.width - 4))) {
-            functionReturn = true;
-            return false;
-        }
-    });
-
-    return functionReturn;
-}
-
-function animateBombermanDeath(bomberman) {
-    let animationCounter = 1;
-    let animationBombermanDeath = setInterval(() => {
-        bomberman.style['width'] = '28px';
-        bomberman.src = `./img/bomberman/lose/move_${String(animationCounter).padStart(2, '0')}.png`;
-        bomberman.setAttribute('class', 'dead');
-        
-        if (++animationCounter > 10) {
-            clearInterval(animationBombermanDeath);
-            return;
-        }
-    }, 200);
+        complementDirImgBefore = complementDirImg;
+    }, 100);
 }
 
 let checkIfButtonWasPressed = setInterval(() => {
@@ -215,6 +190,7 @@ let checkIfButtonWasPressed = setInterval(() => {
             (objectBottom === explosionBottom && objectLeft === explosionLeft - 32)) {
             button.src = './img/stages/castle/button_pressed.png';
             clearInterval(checkIfButtonWasPressed);
+            openDoor();
         }
     }, 50);
 
