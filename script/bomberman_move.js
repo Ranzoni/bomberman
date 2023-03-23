@@ -48,49 +48,82 @@ function animateBomberman(keyDown) {
     }, 200);
 }
 
-function canMoveBomberman(keyDown) {
+function nextBombermanPosition(keyDown) {
     const bomberman = document.getElementById('bomberman');
-    const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
+    const bombermanBottom = +window.getComputedStyle(bomberman).bottom.replace('px', '');
     const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
     const obstacles = document.getElementsByClassName('obstacle');
 
-    let functionReturn = true;
+    let nextBottomPosition = bombermanBottom;
+    let nextLeftPosition = bombermanLeft;
+    if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN) {
+        nextBottomPosition = keyDown === KEY_ARROW_UP ? bombermanBottom + QT_PIXELS_MOVE : bombermanBottom - QT_PIXELS_MOVE;
+        nextLeftPosition = (bombermanLeft % 32 === 0) ? bombermanLeft : Math.round(bombermanLeft / 32) * 32;
+    } else {
+        nextLeftPosition = (keyDown === KEY_ARROW_RIGHT) ? bombermanLeft + QT_PIXELS_MOVE : bombermanLeft - QT_PIXELS_MOVE;
+        nextBottomPosition = (bombermanBottom % 32 === 0) ? bombermanBottom : Math.round(bombermanBottom / 32) * 32;
+    }
+
+    let functionReturn = [nextBottomPosition, nextLeftPosition];
 
     Array.prototype.forEach.call(obstacles, obstacle => {
-        const obstacleTop = +window.getComputedStyle(obstacle).top.replace('px', '');
+        const obstacleBottom = +window.getComputedStyle(obstacle).bottom.replace('px', '');
         const obstacleLeft = +window.getComputedStyle(obstacle).left.replace('px', '');
         
         if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN) {
-            if ((bombermanLeft + bomberman.width) <= (obstacleLeft + 4) || bombermanLeft >= (obstacleLeft + obstacle.width - 4)) {
+            if (nextLeftPosition !== obstacleLeft) {
                 return;
             }
 
-            if ((bombermanTop + bomberman.height) > (obstacleTop + 2) && bombermanTop <= obstacleTop) {
-                return;
+            if (keyDown === KEY_ARROW_UP) {
+                if (bombermanBottom + 30 >= obstacleBottom && bombermanBottom + 30 < (obstacleBottom + obstacle.height)) {
+                    return;
+                }
+            } else {
+                if (bombermanBottom >= obstacleBottom && bombermanBottom < (obstacleBottom + obstacle.height)) {
+                    return;
+                }
             }
 
-            let nextTopPosition = keyDown === KEY_ARROW_UP ? bombermanTop - QT_PIXELS_MOVE : bombermanTop + QT_PIXELS_MOVE;
-            
-            if ((nextTopPosition + bomberman.height) > (obstacleTop + 2) && nextTopPosition <= obstacleTop) {
-                functionReturn = false;
-                return false;
+            if (keyDown === KEY_ARROW_UP) {
+                if (nextBottomPosition + 30 >= obstacleBottom && nextBottomPosition + 30 < (obstacleBottom + obstacle.height)) {
+                    functionReturn = [];
+                    return false;
+                }
+            } else {
+                if (nextBottomPosition >= obstacleBottom && nextBottomPosition < (obstacleBottom + obstacle.height)) {
+                    functionReturn = [];
+                    return false;
+                }
             }
+
         }
         
         if (keyDown === KEY_ARROW_RIGHT || keyDown === KEY_ARROW_LEFT) {
-            if ((bombermanTop + bomberman.height) <= (obstacleTop + 2) || bombermanTop > obstacleTop) {
-                return;
-            }
-            
-            if ((bombermanLeft + bomberman.width) > (obstacleLeft + 4) && bombermanLeft <= (obstacleLeft + obstacle.width - 4)) {
+            if (functionReturn[0] !== obstacleBottom) {
                 return;
             }
 
-            let nextLeftPosition = (keyDown === KEY_ARROW_RIGHT) ? bombermanLeft + QT_PIXELS_MOVE : bombermanLeft - QT_PIXELS_MOVE;
+            if (keyDown === KEY_ARROW_RIGHT) {
+                if (bombermanLeft + bomberman.width > obstacleLeft && bombermanLeft + bomberman.width <= (obstacleLeft + obstacle.width)) {
+                    return;
+                }
+            } else {
+                if (bombermanLeft >= obstacleLeft && bombermanLeft < (obstacleLeft + obstacle.width)) {
+                    return;
+                }
+            }
 
-            if ((nextLeftPosition + bomberman.width) > (obstacleLeft + 4) && nextLeftPosition <= (obstacleLeft + obstacle.width - 4)) {
-                functionReturn = false;
-                return false;
+            if (keyDown === KEY_ARROW_RIGHT) {
+                if (nextLeftPosition + bomberman.width > obstacleLeft && nextLeftPosition + bomberman.width <= (obstacleLeft + obstacle.width)) {
+                    functionReturn = [];
+                    return false;
+                }
+            } else {
+                if (nextLeftPosition >= obstacleLeft && nextLeftPosition < (obstacleLeft + obstacle.width)) {
+                    functionReturn = [];
+                    return false;
+                }
             }
         }
     });
@@ -99,21 +132,20 @@ function canMoveBomberman(keyDown) {
 }
 
 function alterBombermanPosition(keyDown) {
-    if (!canMoveBomberman(keyDown)) {
-        return;
-    }
-
     const bomberman = document.getElementById('bomberman');
     let pixelsToMove = QT_PIXELS_MOVE;
     let property = null;
+    let otherProperty = null;
     if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN)  {
         property = 'top';
+        otherProperty = 'left';
 
         if (keyDown === KEY_ARROW_UP) {
             pixelsToMove *= -1;
         }
     } else if (keyDown === KEY_ARROW_RIGHT || keyDown === KEY_ARROW_LEFT)  {
         property = 'left';
+        otherProperty = 'top';
 
         if (keyDown === KEY_ARROW_LEFT) {
             pixelsToMove *= -1;
@@ -122,16 +154,15 @@ function alterBombermanPosition(keyDown) {
         return;
     }
 
-    let positionBomberman = +window.getComputedStyle(bomberman)[property].replace('px', '');
-    bomberman.style[property] = `${positionBomberman + pixelsToMove}px`;
     loopBombermanPosition = setInterval(() => {
-        if (!canMoveBomberman(keyDown)) {
+        let bombermanNewPosition = nextBombermanPosition(keyDown);
+        if (!bombermanNewPosition) {
             clearInterval(loopBombermanPosition);
             return;
         }
 
-        positionBomberman = +window.getComputedStyle(bomberman)[property].replace('px', '');
-        bomberman.style[property] = `${positionBomberman + pixelsToMove}px`;
+        bomberman.style.bottom = `${bombermanNewPosition[0]}px`;
+        bomberman.style['left'] = `${bombermanNewPosition[1]}px`;
     }, velocityBombermanMove);
 }
 

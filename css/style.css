@@ -31,9 +31,9 @@ body {
 
 #bomberman {
     position: absolute;
-    top: 266px;
+    bottom: 96px;
     left: 256px;
-    width: 30px;
+    width: 32px;
     z-index: 1;
 }
 
