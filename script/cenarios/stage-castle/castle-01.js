@@ -103,8 +103,8 @@ function buildWalls() {
         topPositionInitial += 32;
     }
 
-    buildItem(1, 1, 'profile_wall', 192, 65);
-    buildItem(1, 1, 'left_stair_corner', 192, 97);
+    buildItem(1, 1, 'profile_wall', 192, 64);
+    buildItem(1, 1, 'left_stair_corner', 192, 96);
     buildItem(1, 1, 'right_stair_corner', 192, 160);
 
     leftPosInitial = 192;
