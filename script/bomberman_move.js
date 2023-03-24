@@ -230,7 +230,7 @@ document.addEventListener('keyup', (e) => {
 });
 
 function bombermanDie(bomberman) {
-    const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
+    const bombermanBottom = +window.getComputedStyle(bomberman).bottom.replace('px', '');
     const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
     const explosions = document.getElementsByClassName('explosion');
     let functionReturn = false;
@@ -243,7 +243,7 @@ function bombermanDie(bomberman) {
         const explosionTop = +window.getComputedStyle(explosion).top.replace('px', '');
         const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
 
-        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
+        if (((bombermanBottom + bomberman.height) > (explosionTop + 2) && bombermanBottom <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
             functionReturn = true;
             return false;
         }
@@ -251,10 +251,10 @@ function bombermanDie(bomberman) {
 
     const enemies = document.getElementsByClassName('enemy');
     Array.prototype.forEach.call(enemies, enemy => {
-        const explosionTop = +window.getComputedStyle(enemy).top.replace('px', '');
-        const explosionLeft = +window.getComputedStyle(enemy).left.replace('px', '');
+        const enemyBottom = +window.getComputedStyle(enemy).bottom.replace('px', '');
+        const enemyLeft = +window.getComputedStyle(enemy).left.replace('px', '');
 
-        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + enemy.width - 4))) {
+        if (Math.abs(bombermanBottom - enemyBottom) <= 16 && ((bombermanLeft + bomberman.width) > (enemyLeft + 4) && bombermanLeft <= (enemyLeft + enemy.width - 4))) {
             functionReturn = true;
             return false;
         }
