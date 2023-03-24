@@ -37,6 +37,15 @@ body {
     z-index: 2;
 }
 
+#door-obstacle {
+    height: 32px;
+    width: 32px;
+    left: 384px;
+    top: 96px;
+    position: absolute;
+    opacity: 0;
+}
+
 .door {
     position: absolute;
     width: 32px;
