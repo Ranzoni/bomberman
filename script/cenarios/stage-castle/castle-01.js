@@ -200,6 +200,7 @@ let checkIfButtonWasPressed = setInterval(() => {
             button.src = './img/stages/castle/button_pressed.png';
             clearInterval(checkIfButtonWasPressed);
             animateOpenDoor();
+            document.getElementById('door-obstacle').classList.remove('obstacle');
         }
     }, 50);
 

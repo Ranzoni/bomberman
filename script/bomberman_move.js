@@ -21,6 +21,8 @@ let loopBombermanImage = null;
 let loopBombermanPosition = null;
 let velocityBombermanMove = 15;
 
+let bombermanWasWinner = false;
+
 function animateBomberman(keyDown) {
     let startImgName = '';
     if (keyDown === KEY_ARROW_UP)  {
@@ -133,26 +135,6 @@ function nextBombermanPosition(keyDown) {
 
 function alterBombermanPosition(keyDown) {
     const bomberman = document.getElementById('bomberman');
-    let pixelsToMove = QT_PIXELS_MOVE;
-    let property = null;
-    let otherProperty = null;
-    if (keyDown === KEY_ARROW_UP || keyDown === KEY_ARROW_DOWN)  {
-        property = 'top';
-        otherProperty = 'left';
-
-        if (keyDown === KEY_ARROW_UP) {
-            pixelsToMove *= -1;
-        }
-    } else if (keyDown === KEY_ARROW_RIGHT || keyDown === KEY_ARROW_LEFT)  {
-        property = 'left';
-        otherProperty = 'top';
-
-        if (keyDown === KEY_ARROW_LEFT) {
-            pixelsToMove *= -1;
-        }
-    } else {
-        return;
-    }
 
     loopBombermanPosition = setInterval(() => {
         let bombermanNewPosition = nextBombermanPosition(keyDown);
@@ -209,14 +191,52 @@ function bombermanIsDead() {
     return document.getElementsByClassName('dead').length > 0;
 }
 
+function bombermanWin() {
+    const bomberman = document.getElementById('bomberman');
+    const bombermanBottom = +window.getComputedStyle(bomberman).bottom.replace('px', '');
+    const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
+    const obstacleDoor = document.getElementById('door-obstacle');
+    const obstacleDoorBottom = +window.getComputedStyle(obstacleDoor).bottom.replace('px', '');
+    const obstacleDoorLeft = +window.getComputedStyle(obstacleDoor).left.replace('px', '');
+
+    return Math.round(bombermanBottom / 32) * 32 === obstacleDoorBottom && Math.round(bombermanLeft / 32) * 32 === obstacleDoorLeft;
+}
+
+function animateBombermanWin() {
+    const bomberman = document.getElementById('bomberman');
+
+    let animationCounter = 1;
+    let animationCounterImg = 1;
+    let animationBombermanWin = setInterval(() => {
+        bomberman.src = `./img/bomberman/win/move_0${animationCounterImg++}.png`;
+
+        if (animationCounterImg > 3) {
+            animationCounterImg = 1;
+            animationCounter++;
+        }
+        
+        if (animationCounter > 3) {
+            clearInterval(animationBombermanWin);
+            return;
+        }
+    }, 200);
+}
+
 document.addEventListener('keydown', (e) => {
     let isMoveKey = MOVE_KEYS.find(element => element === e.key);
 
-    if (!!bombermanIsDead() || !isMoveKey) {
+    if (!!bombermanIsDead() || !isMoveKey || !!bombermanWasWinner) {
         return;
     }
     
     moveBomberman(e.key);
+
+    if (!!bombermanWin()) {
+        bombermanWasWinner = true;
+        clearInterval(loopBombermanImage);
+        clearInterval(loopBombermanPosition);
+        animateBombermanWin();
+    }
 });
 
 document.addEventListener('keyup', (e) => {
@@ -230,6 +250,7 @@ document.addEventListener('keyup', (e) => {
 });
 
 function bombermanDie(bomberman) {
+    const bombermanTop = +window.getComputedStyle(bomberman).top.replace('px', '');
     const bombermanBottom = +window.getComputedStyle(bomberman).bottom.replace('px', '');
     const bombermanLeft = +window.getComputedStyle(bomberman).left.replace('px', '');
     const explosions = document.getElementsByClassName('explosion');
@@ -243,7 +264,7 @@ function bombermanDie(bomberman) {
         const explosionTop = +window.getComputedStyle(explosion).top.replace('px', '');
         const explosionLeft = +window.getComputedStyle(explosion).left.replace('px', '');
 
-        if (((bombermanBottom + bomberman.height) > (explosionTop + 2) && bombermanBottom <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
+        if (((bombermanTop + bomberman.height) > (explosionTop + 2) && bombermanTop <= explosionTop) && ((bombermanLeft + bomberman.width) > (explosionLeft + 4) && bombermanLeft <= (explosionLeft + explosion.width - 4))) {
             functionReturn = true;
             return false;
         }
@@ -254,7 +275,7 @@ function bombermanDie(bomberman) {
         const enemyBottom = +window.getComputedStyle(enemy).bottom.replace('px', '');
         const enemyLeft = +window.getComputedStyle(enemy).left.replace('px', '');
 
-        if (Math.abs(bombermanBottom - enemyBottom) <= 16 && ((bombermanLeft + bomberman.width) > (enemyLeft + 4) && bombermanLeft <= (enemyLeft + enemy.width - 4))) {
+        if (Math.abs(bombermanBottom - enemyBottom) <= 16 && ((bombermanLeft + bomberman.width) > (enemyLeft + 16) && bombermanLeft <= (enemyLeft + enemy.width - 16))) {
             functionReturn = true;
             return false;
         }
