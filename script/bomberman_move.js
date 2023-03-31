@@ -199,7 +199,7 @@ function bombermanWin() {
     const obstacleDoorBottom = +window.getComputedStyle(obstacleDoor).bottom.replace('px', '');
     const obstacleDoorLeft = +window.getComputedStyle(obstacleDoor).left.replace('px', '');
 
-    return Math.abs(bombermanBottom - obstacleDoorBottom) <= 16 && ((bombermanLeft + bomberman.width) > (obstacleDoorLeft + 16) && bombermanLeft <= (obstacleDoorLeft + obstacleDoor.width - 16));
+    return Math.round(bombermanBottom / 32) * 32 === obstacleDoorBottom && Math.round(bombermanLeft / 32) * 32 === obstacleDoorLeft;
 }
 
 function animateBombermanWin() {
@@ -232,10 +232,10 @@ document.addEventListener('keydown', (e) => {
     moveBomberman(e.key);
 
     if (!!bombermanWin()) {
+        bombermanWasWinner = true;
         clearInterval(loopBombermanImage);
         clearInterval(loopBombermanPosition);
         animateBombermanWin();
-        bombermanWasWinner = true;
     }
 });
 
