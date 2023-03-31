@@ -7,6 +7,7 @@ function createBomb() {
     const bombermanComputed = window.getComputedStyle(bomberman);
     let bomb = document.createElement('img');
     bomb.setAttribute('class', 'bomb obstacle');
+    bomb.setAttribute('id', 'bomb-form');
     bomb.style['opacity'] = 0;
     bomb.src = './img/bombs/01/bomb_01.png';
 

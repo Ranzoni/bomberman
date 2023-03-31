@@ -233,8 +233,7 @@ document.addEventListener('keydown', (e) => {
 
     if (!!bombermanWin()) {
         bombermanWasWinner = true;
-        clearInterval(loopBombermanImage);
-        clearInterval(loopBombermanPosition);
+        stopBomberman(e.key);
         animateBombermanWin();
     }
 });
