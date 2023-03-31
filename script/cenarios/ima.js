@@ -29,6 +29,15 @@ function directionMagnet(magnet) {
     }
 }
 
+function newExplosionPosition(newValue, position) {
+    const explosions = document.getElementsByClassName('explosion');
+    Array.prototype.forEach.call(explosions, explosion => {
+        let explosionBottom = +window.getComputedStyle(explosion).bottom.replace('px', '');
+        explosionBottom += newValue;
+        explosion.style[position] = `${explosionBottom}px`;
+    });
+}
+
 function attractBomb(magnet) {
     const bomb = document.getElementById('bomb-form');
     if (!bomb || !!bomb.classList.contains('attracted')) {
@@ -41,10 +50,12 @@ function attractBomb(magnet) {
     const magnetLeft = +window.getComputedStyle(magnet).left.replace('px', '');
 
     if (bombBottom === magnetBottom) {
+        let bombLeftBefore = bombLeft;
         let animationBombMagnet = setInterval(() => {
             let numberToAdd;
             if (bombLeft > magnetLeft) {
                 if (bombLeft - 32 === magnetLeft) {
+                    newExplosionPosition(bombLeft - bombLeftBefore, 'left');
                     clearInterval(animationBombMagnet);
                     return false;
                 }
@@ -52,6 +63,7 @@ function attractBomb(magnet) {
                 numberToAdd = -8;
             } else {
                 if (bombLeft + 32 === magnetLeft) {
+                    newExplosionPosition(bombLeft - bombLeftBefore, 'left');
                     clearInterval(animationBombMagnet);
                     return false;
                 }
@@ -68,12 +80,7 @@ function attractBomb(magnet) {
             let numberToAdd;
             if (bombBottom > magnetBottom) {
                 if (bombBottom - 32 === magnetBottom || directionMagnet(magnet) !== MAGNET_UP) {
-                    const explosions = document.getElementsByClassName('explosion');
-                    Array.prototype.forEach.call(explosions, explosion => {
-                        let explosionBottom = +window.getComputedStyle(explosion).bottom.replace('px', '');
-                        explosionBottom += bombBottom - bombBottomBefore;
-                        explosion.style['bottom'] = `${explosionBottom}px`;
-                    });
+                    newExplosionPosition(bombBottom - bombBottomBefore, 'bottom');
                     clearInterval(animationBombMagnet);
                     return false;
                 }
@@ -81,6 +88,7 @@ function attractBomb(magnet) {
                 numberToAdd = -8;
             } else {
                 if (bombBottom + 32 === magnetBottom || directionMagnet(magnet) !== MAGNET_DOWN) {
+                    newExplosionPosition(bombBottom - bombBottomBefore, 'bottom');
                     clearInterval(animationBombMagnet);
                     return false;
                 }
